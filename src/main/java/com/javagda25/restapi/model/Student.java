@@ -1,51 +1,47 @@
 package com.javagda25.restapi.model;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
-import lombok.NoArgsConstructor;
+
+import com.fasterxml.jackson.annotation.JsonFormat;
+import lombok.*;
 import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.Formula;
+import org.springframework.format.annotation.DateTimeFormat;
 
 import javax.persistence.*;
+import java.time.LocalDate;
 import java.util.Set;
 
-@Data
-//@AllArgsConstructor
-@NoArgsConstructor
 @Entity
+@Data
+@AllArgsConstructor
+@NoArgsConstructor
 public class Student {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
-    @Column(nullable = false)
     private String name;
+
     private String surname;
 
-    private int age; // "not null"
-    private boolean alive; // "not null"
+    @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy/MM/dd")
+    private LocalDate dateOfBirth;
 
-    //    WYKOMENTOWANE
-    @Formula(value = "(SELECT AVG(g.value) FROM grade g WHERE g.student_id = id)")
-    private Double average; // nullable - nie ma "not null"
+    @Formula(value = "(year(now())- year(date_of_birth))")
+    private int age;
+
+    private boolean isAlive;
 
     @EqualsAndHashCode.Exclude
-    @OneToMany(mappedBy = "student", fetch = FetchType.EAGER, cascade = CascadeType.REMOVE)
-    @Cascade(value = {org.hibernate.annotations.CascadeType.REMOVE})
-    private Set<Grade> gradeList;
+    @ToString.Exclude
+    @OneToMany(mappedBy = "student", fetch = FetchType.EAGER)
+    private Set<Grade> grades;
 
-    public Student(String name, String surname, int age, boolean alive) {
+
+    public Student(String name, String surname, LocalDate dateOfBirth, boolean isAlive) {
         this.name = name;
         this.surname = surname;
-        this.age = age;
-        this.alive = alive;
-    }
-
-    public Student(Long id, String name, String surname, int age, boolean alive) {
-        this.id = id;
-        this.name = name;
-        this.surname = surname;
-        this.age = age;
-        this.alive = alive;
+        this.dateOfBirth = dateOfBirth;
+        this.isAlive = isAlive;
     }
 }

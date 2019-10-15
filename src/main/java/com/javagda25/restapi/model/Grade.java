@@ -1,34 +1,35 @@
 package com.javagda25.restapi.model;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import lombok.ToString;
 import org.hibernate.annotations.CreationTimestamp;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
 
 @Data
-@NoArgsConstructor
-@AllArgsConstructor
 @Entity
+@AllArgsConstructor
+@NoArgsConstructor
 public class Grade {
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    @Enumerated(value = EnumType.STRING)
+
+    @Enumerated(EnumType.STRING)
     private GradeSubject subject;
+
+    private double value;
+
     @CreationTimestamp
     @Column(updatable = false)
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy/MM/dd HH:mm")
     private LocalDateTime dateAdded;
-    private double value;
-    //    KOPIOWANKO W DÓŁ
-    @ToString.Exclude
-    @ManyToOne()
+
+    @ManyToOne
+    @JsonBackReference
     private Student student;
-    public Grade(GradeSubject subject, double value) {
-        this.subject = subject;
-        this.value = value;
-    }
 }
