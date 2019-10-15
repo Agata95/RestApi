@@ -6,9 +6,12 @@ import com.javagda25.restapi.model.dto.CreateStudentRequest;
 import com.javagda25.restapi.model.dto.StudentUpdateRequest;
 import com.javagda25.restapi.repository.StudentRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
 import javax.persistence.EntityNotFoundException;
+import java.awt.print.Pageable;
 import java.util.List;
 import java.util.Optional;
 
@@ -71,5 +74,25 @@ public class StudentService {
             return;
         }
         throw new EntityNotFoundException("student, id: " + id);
+    }
+
+    public List<Student> getBySurname(String surname) {
+        return studentRepository.findBySurname(surname);
+    }
+
+    public List<Student> getByAgeBefore(Integer age) {
+        return studentRepository.findByAgeBefore(age);
+    }
+
+    public List<Student> getByAgeAfter(Integer age) {
+        return studentRepository.findByAgeAfter(age);
+    }
+
+    public List<Student> getByAgeBeforeAndAfter(Integer ageBefore, Integer ageAfter) {
+        return studentRepository.findByAgeBetween(ageBefore, ageAfter);
+    }
+
+    public Page<Student> getPage(PageRequest of){
+        return studentRepository.findAll(of);
     }
 }

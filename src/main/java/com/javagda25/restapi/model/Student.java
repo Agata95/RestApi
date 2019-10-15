@@ -28,7 +28,7 @@ public class Student {
     private LocalDate dateOfBirth;
 
     @Formula(value = "(year(now())- year(date_of_birth))")
-    private int age;
+    private Integer age;
 
     private boolean isAlive;
 
